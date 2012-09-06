@@ -59,9 +59,24 @@
                 :state nil})
    :state nil})
 
-(defn avoid-bot-factory
+(def to-left
+  {[0 1]  [-1 0]
+   [-1 0] [0 -1]
+   [0 -1] [1 0]
+   [1 0]  [0 1]})
+
+(defn avoider-bot-factory
   "Generates bot that goes straight ahead and avoid obstacles!"
-  )
+  [[di dj :as dir]]
+  {:strategy
+   (fn [pos dir]
+     (let [new-pos (map + pos dir)]
+       (if @(get-in arena new-pos)
+         (let [new-dir (to-left dir)
+               new-pos (map + pos new-dir)]
+           {:pos new-pos :state new-dir})
+         {:pos new-pos :state dir})))
+   :state dir})
 
 (defn play
   "Play the strategy for the bot bot. A strategy takes one position or nil if impossible."
@@ -89,7 +104,8 @@
 (print-arena arena)
 
 (do
-  (future (play \o (stubborn-bot-factory [1 0])  [1 1]))
-  (future (play \z (stubborn-bot-factory [0 -1]) [8 8])))
+  (future (play \o (avoider-bot-factory [1 0])  [3 3]))
+  (future (play \z (avoider-bot-factory [0 -1]) [8 8]))
+  (future (play \a (avoider-bot-factory [-1 0]) [2 1])))
 
 
