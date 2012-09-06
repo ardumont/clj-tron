@@ -45,7 +45,7 @@
 
 #_(print-arena arena)
 
-(defn stubborn-bot-factory
+(defn stubborn-bnot-factory
   "Stubborn bot that goes straight ahead"
   [[di dj]]
   (fn [[i j]]
@@ -92,7 +92,6 @@
        (dosync
         (let [r (get-in arena pos)]
           (if @r
-
             (println name "ARGGGGGHHHHH! BOUM!")
             (do
               (ref-set r name)
@@ -100,13 +99,72 @@
 
 #_(play 1 (stubborn-bot-factory [1 0]) [3 3])
 
-(def arena (make-arena 20 20))
+#_(def arena (make-arena 20 20))
 
-(print-arena arena)
-
-(do
+#_(do
   (future (play \o (avoider-bot-factory [1 0])  [3 3]))
   (future (play \z (avoider-bot-factory [0 -1]) [8 8]))
   (future (play \a (avoider-bot-factory [-1 0]) [2 1])))
 
+#_(print-arena arena)
 
+(defn display-arena
+  "Display regularly the arena according to the print-fn function (which takes an arena as parameter)"
+  [print-fn n]
+  (fn [arena]
+    (repeatedly n
+                #(dosync (print-fn arena)
+                         (Thread/sleep 400)) )))
+
+(def display-arena-print (display-arena print-arena 10))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def *size-cell 20);; size of the cell
+(def *offset 29)   ;; for the border drawn in gnome (do not work under stumpwm)
+
+(defn get-gfx "Given a width and a height, returns a frame with these dimension"
+  [width height]
+  (.getGraphics
+   (doto (javax.swing.JFrame.)
+     (.setDefaultCloseOperation javax.swing.WindowConstants/DISPOSE_ON_CLOSE)
+     (.setSize width height)
+     (.setVisible true))))
+
+(defn random-arena! "Generate a random number of tron bots"
+  [n]
+  (do
+    (make-arena n n)
+    (future (play \o (avoider-bot-factory [1 0])  [3 3]))
+    (future (play \z (avoider-bot-factory [0 -1]) [8 8]))
+    (future (play \a (avoider-bot-factory [-1 0]) [2 1]))))
+
+(defn- draw-cell!
+  "Given a color and a cell's coordinate, draw the cell with the color col"
+  [gfx col x y]
+  (.setColor gfx col)
+  (.fillRect gfx
+             (* *size-cell x)
+             (+ *offset (* *size-cell y))
+             *size-cell *size-cell))
+
+(defn draw-arena!
+  [gfx arena]
+  (dosync
+   (doseq [x (count arena), y (count (first arena))]
+     (let [v (get-in arena [x y])
+           c #({:wall java.awt.Color/BLACK
+                nil   java.awt.Color/WHITE} val java.awt.Color/BLUE)]
+       (draw-cell! gfx c x y)))))
+
+(defn tron! "tron"
+  ([n]
+     (tron! n (random-arena! n)))
+  ([n arena]
+     (let [w (* *size-cell n)
+           h (* *size-cell n)
+           gfx (get-gfx w h)]
+       (do (draw-arena! gfx arena)
+           (Thread/sleep 400)))))
+
+#_(display-arena-print arena)
