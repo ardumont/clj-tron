@@ -14,12 +14,20 @@
 (defn make-arena
   "Build a new arena w x h"
   [w h]
-  (->>
-   (repeatedly #(ref nil))
-   (partition h)
-   (map vec)
-   (take w)
-   vec))
+  (let [arena (->>
+               (repeatedly #(ref nil))
+               (partition h)
+               (map vec)
+               (take w)
+               vec)]
+    (dosync
+     (doseq [i (range w)]
+       (ref-set (get-in arena [i 0]) :wall)
+       (ref-set (get-in arena [i (dec h)]) :wall))
+     (doseq [j (range h)]
+       (ref-set (get-in arena [0 j]) :wall)
+       (ref-set (get-in arena [(dec w) j]) :wall)))
+    arena))
 
 (def arena (make-arena 10 10))
 
