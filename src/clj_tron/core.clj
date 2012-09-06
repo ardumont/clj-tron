@@ -31,14 +31,17 @@
        (ref-set (get-in arena [(dec w) j]) :wall)))
     arena))
 
-(def arena (make-arena 10 10)q)
+(def arena (make-arena 10 10))
 
 (p/pprint arena)
 
 (defn print-arena
   [arena]
-  (doseq [row arena]
-    (let [vals (map deref row)
-          chars (map {:wall \X nil \space} vals)]
-      (println (apply str chars)))))
+  (dosync
+   (doseq [row arena]
+     (let [vals (map deref row)
+           chars (map {:wall \X nil \space} vals)]
+       (println (apply str chars))))))
+
+(print-arena arena)
 
