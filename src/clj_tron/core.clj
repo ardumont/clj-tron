@@ -45,3 +45,18 @@
 
 (print-arena arena)
 
+(defn stubborn-bot
+  "Stubborn bot that goes straight ahead"
+  [name [i j :as pos] [di dj]]
+  (dosync
+   (let [r (get-in arena pos)]
+     (if @r
+       (println name "-> boum!")
+       (do
+         (ref-set r name)
+         [(+ i di) (+ j dj)])))))
+
+(defn play
+  "Play the strategy for the bot bot"
+  [bot]
+  )
