@@ -5,10 +5,11 @@
   (vec (repeat 10 (repeat 10 nil))))
 
 (defn make-arena
-  "Build a new arena nxn"
-  [n]
-  (vec (repeat n (repeat n nil))))
+  "Build a new arena w x h"
+  [w h]
+  (vec (repeat w (repeat h nil))))
 
-(def arena (make-arena 10))
+(def arena (make-arena 10 10))
 
 (p/pprint arena)
+
