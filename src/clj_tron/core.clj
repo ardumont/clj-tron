@@ -9,6 +9,18 @@
   [w h]
   (vec (repeatedly w (fn [] (vec (repeatedly h #(ref nil)))))))
 
+;; ou
+
+(defn make-arena
+  "Build a new arena w x h"
+  [w h]
+  (->>
+   (repeatedly #(ref nil))
+   (partition h)
+   (map vec)
+   (take w)
+   vec))
+
 (def arena (make-arena 10 10))
 
 (p/pprint arena)
