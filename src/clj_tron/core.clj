@@ -7,7 +7,7 @@
 (defn make-arena
   "Build a new arena w x h"
   [w h]
-  (vec (repeat w (repeat h nil))))
+  (vec (repeat w (repeat h (ref nil)))))
 
 (def arena (make-arena 10 10))
 
