@@ -87,11 +87,12 @@
          {:pos init-pos
           :state init-state}]
     (when pos
-      (Thread/sleep 2000)
+      (Thread/sleep 400)
       (recur
        (dosync
         (let [r (get-in arena pos)]
           (if @r
+
             (println name "ARGGGGGHHHHH! BOUM!")
             (do
               (ref-set r name)
