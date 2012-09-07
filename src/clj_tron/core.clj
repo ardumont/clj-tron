@@ -45,7 +45,7 @@
 
 #_(print-arena arena)
 
-(defn stubborn-bnot-factory
+(defn stubborn-bot-factory
   "Stubborn bot that goes straight ahead"
   [[di dj]]
   (fn [[i j]]
@@ -53,7 +53,7 @@
 
 (defn stubborn-bot-factory
   "Drunk bot that goes randomly"
-  [[di dj]]
+  [arena [di dj]]
   {:strategy (fn [[i j] _]
                {:pos [(+ i di) (+ j dj)]
                 :state nil})
@@ -67,7 +67,7 @@
 
 (defn avoider-bot-factory
   "Generates bot that goes straight ahead and avoid obstacles!"
-  [[di dj :as dir]]
+  [arena [di dj :as dir]]
   {:strategy
    (fn [pos dir]
      (let [new-pos (map + pos dir)]
@@ -80,8 +80,8 @@
 
 (defn play
   "Play the strategy for the bot bot. A strategy takes one position or nil if impossible."
-  [name {bot :strategy
-         init-state :state} init-pos]
+  [arena name {bot :strategy
+               init-state :state} init-pos]
   (loop [{pos :pos
           bot-state :state}
          {:pos init-pos
@@ -97,14 +97,15 @@
               (ref-set r name)
               (bot pos bot-state)))))))))
 
-#_(play 1 (stubborn-bot-factory [1 0]) [3 3])
+#_(play 1 (stubborn-bot-factory arena [1 0]) [3 3])
 
 #_(def arena (make-arena 20 20))
 
 #_(do
-  (future (play \o (avoider-bot-factory [1 0])  [3 3]))
-  (future (play \z (avoider-bot-factory [0 -1]) [8 8]))
-  (future (play \a (avoider-bot-factory [-1 0]) [2 1])))
+    (let [arena (make-arena 20 20)]
+      (future (play arena \o (avoider-bot-factory arena [1 0])  [3 3]))
+      (future (play arena \z (avoider-bot-factory arena [0 -1]) [8 8]))
+      (future (play arena \a (avoider-bot-factory arena [-1 0]) [2 1]))))
 
 #_(print-arena arena)
 
@@ -134,10 +135,10 @@
 (defn random-arena! "Generate a random number of tron bots"
   [n]
   (do
-    (make-arena n n)
-    (future (play \o (avoider-bot-factory [1 0])  [3 3]))
-    (future (play \z (avoider-bot-factory [0 -1]) [8 8]))
-    (future (play \a (avoider-bot-factory [-1 0]) [2 1]))))
+    (let [arena (make-arena n n)]
+      (future (play arena \o (avoider-bot-factory arena [1 0])  [3 3]))
+      (future (play arena \z (avoider-bot-factory arena [0 -1]) [8 8]))
+      (future (play arena \a (avoider-bot-factory arena [-1 0]) [2 1])))))
 
 (defn- draw-cell!
   "Given a color and a cell's coordinate, draw the cell with the color col"
@@ -151,8 +152,9 @@
 (defn draw-arena!
   [gfx arena]
   (dosync
-   (doseq [x (count arena), y (count (first arena))]
-     (let [v (get-in arena [x y])
+   (doseq [x (count arena)
+           y (count (first arena))]
+     (let [v @(get-in arena [x y])
            c #({:wall java.awt.Color/BLACK
                 nil   java.awt.Color/WHITE} val java.awt.Color/BLUE)]
        (draw-cell! gfx c x y)))))
