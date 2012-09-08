@@ -36,20 +36,25 @@
 ;; Behaviour to turn left at each obstacle
 (def to-left
   {[0 1]  [1 0]
-   [-1 0] [0 1]
+   [1 0]  [0 -1]
    [0 -1] [-1 0]
-   [1 0]  [0 -1]})
+   [-1 0] [0 1]})
 
 (defn avoider-bot-factory
   "Generates bot that goes straight ahead and avoid obstacles by trying to turn left or right!"
   [arena [di dj :as dir]]
   {:strategy
-   (fn [pos dir]
-     (let [new-pos (map + pos dir)]
+   (fn [posi dir]
+     (let [new-pos (map + posi dir)]
        (if @(get-in arena new-pos)
-         (let [{:keys [pos] :as right} (new-pos-dir pos dir to-right)]
-           (if @(get-in arena pos)
-             (new-pos-dir pos dir to-left))
-           right)
+         (if (zero? (mod (rand-int 1000) 2));; even -> left, odd -> right
+           (let [{:keys [pos] :as new-res-left} (new-pos-dir posi dir to-left)]
+             (if @(get-in arena pos)
+               (new-pos-dir pos dir to-right))
+             new-res-left)
+           (let [{:keys [pos] :as new-res-right} (new-pos-dir posi dir to-right)]
+             (if @(get-in arena pos)
+               (new-pos-dir pos dir to-left))
+             new-res-right))
          {:pos new-pos :state dir})))
    :state dir})

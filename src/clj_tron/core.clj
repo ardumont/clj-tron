@@ -83,7 +83,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def *size-cell 30);; size of the cell
+(def *size-cell 20);; size of the cell
 (def *offset 29)   ;; for the border drawn in gnome (do not work under stumpwm)
 
 (defn get-gfx "Given a width and a height, returns a frame with these dimension"
