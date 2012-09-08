@@ -101,17 +101,17 @@
       (future
         (play arena
               java.awt.Color/RED
-              (b/avoider-right-bot-factory arena (r/rand-direction))
+              (b/avoider-bot-factory arena (r/rand-direction))
               (r/rand-pos n)))
       (future
         (play arena
               java.awt.Color/GREEN
-              (b/avoider-right-bot-factory arena (r/rand-direction))
+              (b/avoider-bot-factory arena (r/rand-direction))
               (r/rand-pos n)))
       (future
         (play arena
               java.awt.Color/BLUE
-              (b/avoider-right-bot-factory arena (r/rand-direction))
+              (b/avoider-bot-factory arena (r/rand-direction))
               (r/rand-pos n)))
       arena)))
 

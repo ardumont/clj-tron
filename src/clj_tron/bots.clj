@@ -47,8 +47,8 @@
    (fn [pos dir]
      (let [new-pos (map + pos dir)]
        (if @(get-in arena new-pos)
-         (let [{:keys [new-dir-r new-pos-r] :as right} (new-pos-dir pos dir to-right)]
-           (if @(get-in arena new-pos-r)
+         (let [{:keys [pos] :as right} (new-pos-dir pos dir to-right)]
+           (if @(get-in arena pos)
              (new-pos-dir pos dir to-left))
            right)
          {:pos new-pos :state dir})))
