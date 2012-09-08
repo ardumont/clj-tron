@@ -3,16 +3,6 @@
              [pprint :as p]
              [string :as s]]))
 
-#_(def arena
-  (vec (repeat 10 (repeat 10 nil))))
-
-(defn make-arena
-  "Build a new arena w x h"
-  [w h]
-  (vec (repeatedly w (fn [] (vec (repeatedly h #(ref nil)))))))
-
-;; ou
-
 (defn make-arena
   "Build a new arena w x h"
   [w h]
