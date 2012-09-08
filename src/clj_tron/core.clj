@@ -114,18 +114,18 @@
       (future
         (play arena
               java.awt.Color/RED
-              (b/avoider-bot-factory arena [1 0])
-              [3 3]))
+              (b/avoider-bot-factory arena (rand-direction))
+              (rand-pos n)))
       (future
         (play arena
               java.awt.Color/GREEN
-              (b/avoider-bot-factory arena [0 -1])
-              [8 8]))
+              (b/avoider-bot-factory arena (rand-direction))
+              (rand-pos n)))
       (future
         (play arena
               java.awt.Color/BLUE
-              (b/avoider-bot-factory arena [-1 0])
-              [2 1]))
+              (b/avoider-bot-factory arena (rand-direction))
+              (rand-pos n)))
       arena)))
 
 (defn- draw-cell!
