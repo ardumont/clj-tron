@@ -1,7 +1,8 @@
 (ns clj-tron.core
   (:require [clojure
              [pprint :as p]
-             [string :as s]]))
+             [string :as s]]
+            [clj-tron.bots :as b]))
 
 ;; Some small game of tron started in the code retreat 'intro to clojure' with Christophe Grand himself
 ;; main function tron!
@@ -41,40 +42,6 @@
 
 #_(print-arena arena)
 
-(defn stubborn-bot-factory
-  "Stubborn bot that goes straight ahead"
-  [[di dj]]
-  (fn [[i j]]
-    [(+ i di) (+ j dj)]))
-
-(defn stubborn-bot-factory
-  "Drunk bot that goes randomly"
-  [arena [di dj]]
-  {:strategy (fn [[i j] _]
-               {:pos [(+ i di) (+ j dj)]
-                :state nil})
-   :state nil})
-
-;; Behaviour to turn left at each obstacle
-(def to-left
-  {[0 1]  [-1 0]
-   [-1 0] [0 -1]
-   [0 -1] [1 0]
-   [1 0]  [0 1]})
-
-(defn avoider-bot-factory
-  "Generates bot that goes straight ahead and avoid obstacles!"
-  [arena [di dj :as dir]]
-  {:strategy
-   (fn [pos dir]
-     (let [new-pos (map + pos dir)]
-       (if @(get-in arena new-pos)
-         (let [new-dir (to-left dir)
-               new-pos (map + pos new-dir)]
-           {:pos new-pos :state new-dir})
-         {:pos new-pos :state dir})))
-   :state dir})
-
 (defn play
   "Play the strategy for the bot bot. A strategy takes one position or nil if impossible."
   [arena name {bot :strategy
@@ -97,9 +64,9 @@
 #_(def arena (make-arena 20 20))
 
 #_(let [arena (make-arena 20 20)]
-  (future (play arena \o (avoider-bot-factory arena [1 0])  [3 3]))
-  (future (play arena \z (avoider-bot-factory arena [0 -1]) [8 8]))
-  (future (play arena \a (avoider-bot-factory arena [-1 0]) [2 1])))
+  (future (play arena \o (b/avoider-bot-factory arena [1 0])  [3 3]))
+  (future (play arena \z (b/avoider-bot-factory arena [0 -1]) [8 8]))
+  (future (play arena \a (b/avoider-bot-factory arena [-1 0]) [2 1])))
 
 #_(print-arena arena)
 
@@ -117,7 +84,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def *size-cell 10);; size of the cell
+(def *size-cell 30);; size of the cell
 (def *offset 29)   ;; for the border drawn in gnome (do not work under stumpwm)
 
 (defn get-gfx "Given a width and a height, returns a frame with these dimension"
@@ -135,17 +102,17 @@
       (future
         (play arena
               java.awt.Color/RED
-              (avoider-bot-factory arena [1 0])
+              (b/avoider-bot-factory arena [1 0])
               [3 3]))
       (future
         (play arena
               java.awt.Color/GREEN
-              (avoider-bot-factory arena [0 -1])
+              (b/avoider-bot-factory arena [0 -1])
               [8 8]))
       (future
         (play arena
               java.awt.Color/BLUE
-              (avoider-bot-factory arena [-1 0])
+              (b/avoider-bot-factory arena [-1 0])
               [2 1]))
       arena)))
 
