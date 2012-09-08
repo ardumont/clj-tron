@@ -93,6 +93,20 @@
      (.setSize w h)
      (.setVisible true))))
 
+(defn- rand-pos
+  "Compute a random position [x y] with in [0;n["
+  [n]
+  [(rand-int n) (rand-int n)])
+
+(defn- rand-int-neg
+  "Compute a number in [-1;1]"
+  []
+  (let [rel (rand-int 2)
+        res (rand-int 2)]
+    (if (zero? rel) res (* -1 res))))
+
+(def rand-direction (juxt rand-int-neg rand-int-neg))
+
 (defn random-arena! "Creates an arena and setup a random number of tron bots"
   [n]
   (do
