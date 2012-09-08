@@ -83,7 +83,7 @@
        (dosync
         (let [r (get-in arena pos)]
           (if @r
-            (println name "ARGGGGGHHHHH! BOUM!")
+            (ref-set r :dead)
             (do
               (ref-set r name)
               (bot pos bot-state)))))))))
@@ -159,6 +159,7 @@
            y (range (count (first arena)))]
      (let [v @(get-in arena [x y])
            c ({:wall java.awt.Color/BLACK
+               :dead java.awt.Color/ORANGE
                nil   java.awt.Color/WHITE} v v)]
        (draw-cell! gfx c x y))))
   arena)
