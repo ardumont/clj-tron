@@ -103,34 +103,49 @@
   (fn [arena]
     (repeatedly n
                 #(dosync (print-fn arena)
-                         (Thread/sleep 400)) )))
+                         (Thread/sleep 400)))))
 
 (def display-arena-print (display-arena print-arena 10))
 
+#_(display-arena-print arena)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def *size-cell 20);; size of the cell
+(def *size-cell 10);; size of the cell
 (def *offset 29)   ;; for the border drawn in gnome (do not work under stumpwm)
 
 (defn get-gfx "Given a width and a height, returns a frame with these dimension"
-  [width height]
+  [w h]
   (.getGraphics
    (doto (javax.swing.JFrame.)
      (.setDefaultCloseOperation javax.swing.WindowConstants/DISPOSE_ON_CLOSE)
-     (.setSize width height)
+     (.setSize w h)
      (.setVisible true))))
 
-(defn random-arena! "Generate a random number of tron bots"
+(defn random-arena! "Creates an arena and setup a random number of tron bots"
   [n]
   (do
     (let [arena (make-arena n n)]
-      (future (play arena \o (avoider-bot-factory arena [1 0])  [3 3]))
-      (future (play arena \z (avoider-bot-factory arena [0 -1]) [8 8]))
-      (future (play arena \a (avoider-bot-factory arena [-1 0]) [2 1])))))
+      (future
+        (play arena
+              java.awt.Color/RED
+              (avoider-bot-factory arena [1 0])
+              [3 3]))
+      (future
+        (play arena
+              java.awt.Color/GREEN
+              (avoider-bot-factory arena [0 -1])
+              [8 8]))
+      (future
+        (play arena
+              java.awt.Color/BLUE
+              (avoider-bot-factory arena [-1 0])
+              [2 1]))
+      arena)))
 
 (defn- draw-cell!
   "Given a color and a cell's coordinate, draw the cell with the color col"
-  [gfx col x y]
+  [^java.awt.Graphics2D gfx ^java.awt.Color col x y]
   (.setColor gfx col)
   (.fillRect gfx
              (* *size-cell x)
