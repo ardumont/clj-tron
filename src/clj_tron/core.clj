@@ -4,11 +4,9 @@
              [string :as s]]
             [clj-tron.bots :as b]))
 
-;; Some small game of tron started in the code retreat 'intro to clojure' with Christophe Grand himself
-;; main function tron!
-;; wall are black
-;; when a bot dies, the cell in which it crashes become orange
-;; in the colorized version, the name is the color of the bot
+;; Some small game of tron started in the code retreat 'intro to clojure' with Christophe Grand himself main function
+;; tron! wall are black when a bot dies, the cell in which it crashes become orange in the colorized version, the name
+;; is the color of the bot
 
 (defn make-arena
   "Build a new arena w x h"
