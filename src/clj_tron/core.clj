@@ -154,13 +154,15 @@
 
 (defn draw-arena!
   [gfx arena]
-  (dosync
-   (doseq [x (count arena)
-           y (count (first arena))]
-     (let [v @(get-in arena [x y])
-           c #({:wall java.awt.Color/BLACK
-                nil   java.awt.Color/WHITE} val java.awt.Color/BLUE)]
-       (draw-cell! gfx c x y)))))
+  (do
+    (dosync
+     (doseq [x (range (count arena))
+             y (range (count (first arena)))]
+       (let [v @(get-in arena [x y])
+             c ({:wall java.awt.Color/BLACK
+                 nil   java.awt.Color/WHITE} v v)]
+         (draw-cell! gfx c x y))))
+    (recur gfx arena)))
 
 (defn tron! "tron"
   ([n]
@@ -168,8 +170,11 @@
   ([n arena]
      (let [w (* *size-cell n)
            h (* *size-cell n)
-           gfx (get-gfx w h)]
+           ^java.awt.Graphics2D gfx (get-gfx w h)]
        (do (draw-arena! gfx arena)
-           (Thread/sleep 400)))))
+           (println "cycle")
+           (Thread/sleep 500)))))
 
 #_(display-arena-print arena)
+
+#_ (tron! 20)
