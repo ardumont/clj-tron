@@ -88,15 +88,12 @@
               (ref-set r name)
               (bot pos bot-state)))))))))
 
-#_(play 1 (stubborn-bot-factory arena [1 0]) [3 3])
-
 #_(def arena (make-arena 20 20))
 
-#_(do
-    (let [arena (make-arena 20 20)]
-      (future (play arena \o (avoider-bot-factory arena [1 0])  [3 3]))
-      (future (play arena \z (avoider-bot-factory arena [0 -1]) [8 8]))
-      (future (play arena \a (avoider-bot-factory arena [-1 0]) [2 1]))))
+#_(let [arena (make-arena 20 20)]
+  (future (play arena \o (avoider-bot-factory arena [1 0])  [3 3]))
+  (future (play arena \z (avoider-bot-factory arena [0 -1]) [8 8]))
+  (future (play arena \a (avoider-bot-factory arena [-1 0]) [2 1])))
 
 #_(print-arena arena)
 
