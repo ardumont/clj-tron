@@ -2,7 +2,8 @@
   (:require [clojure
              [pprint :as p]
              [string :as s]]
-            [clj-tron.bots :as b]))
+            [clj-tron.bots :as b]
+            [clj-tron.rand :as r]))
 
 ;; Some small game of tron started in the code retreat 'intro to clojure' with Christophe Grand himself main function
 ;; tron! wall are black when a bot dies, the cell in which it crashes become orange in the colorized version, the name
@@ -93,20 +94,6 @@
      (.setSize w h)
      (.setVisible true))))
 
-(defn- rand-pos
-  "Compute a random position [x y] with in [0;n["
-  [n]
-  [(rand-int n) (rand-int n)])
-
-(defn- rand-int-neg
-  "Compute a number in [-1;1]"
-  []
-  (let [rel (rand-int 2)
-        res (rand-int 2)]
-    (if (zero? rel) res (* -1 res))))
-
-(def rand-direction (juxt rand-int-neg rand-int-neg))
-
 (defn random-arena! "Creates an arena and setup a random number of tron bots"
   [n]
   (do
@@ -114,18 +101,18 @@
       (future
         (play arena
               java.awt.Color/RED
-              (b/avoider-bot-factory arena (rand-direction))
-              (rand-pos n)))
+              (b/avoider-right-bot-factory arena (r/rand-direction))
+              (r/rand-pos n)))
       (future
         (play arena
               java.awt.Color/GREEN
-              (b/avoider-bot-factory arena (rand-direction))
-              (rand-pos n)))
+              (b/avoider-right-bot-factory arena (r/rand-direction))
+              (r/rand-pos n)))
       (future
         (play arena
               java.awt.Color/BLUE
-              (b/avoider-bot-factory arena (rand-direction))
-              (rand-pos n)))
+              (b/avoider-right-bot-factory arena (r/rand-direction))
+              (r/rand-pos n)))
       arena)))
 
 (defn- draw-cell!
