@@ -15,7 +15,7 @@
   [(rand-int-not-zero n) (rand-int-not-zero n)])
 
 (comment
-  (juxt  rand-int rand-int)
+  (juxt rand-int rand-int)
   (let [c (rand-int 2)                  ; choice for the precedence of x over y if 0
         x (rand-int n)
         y (rand-int n)]
