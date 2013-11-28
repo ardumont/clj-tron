@@ -9,8 +9,7 @@
 ;; tron! wall are black when a bot dies, the cell in which it crashes become orange in the colorized version, the name
 ;; is the color of the bot
 
-(defn make-arena "Build a new arena w x h"
-  [w h]
+(defn make-arena "Build a new arena w x h" [w h]
   (let [arena (->>
                (repeatedly #(ref nil))
                (partition h)
@@ -30,8 +29,7 @@
 
 #_(p/pprint arena)
 
-(defn print-arena
-  [arena]
+(defn print-arena [arena]
   (dosync
    (doseq [row arena]
      (let [vals (map deref row)
@@ -40,9 +38,8 @@
 
 #_(print-arena arena)
 
-(defn play "Play the strategy for the bot bot. A strategy takes one position or nil if impossible."
-  [arena name {bot :strategy
-               init-state :state} init-pos]
+(defn play "Play the strategy for the bot bot. A strategy takes one position or nil if impossible." [arena name {bot :strategy
+                                                                                                                 init-state :state} init-pos]
   (loop [{pos :pos
           bot-state :state}
          {:pos init-pos
@@ -113,16 +110,14 @@
               (r/rand-pos n)))
       arena)))
 
-(defn- draw-cell! "Given a color and a cell's coordinate, draw the cell with the color col"
-  [^java.awt.Graphics2D gfx ^java.awt.Color col x y]
+(defn- draw-cell! "Given a color and a cell's coordinate, draw the cell with the color col" [^java.awt.Graphics2D gfx ^java.awt.Color col x y]
   (.setColor gfx col)
   (.fillRect gfx
              (* *size-cell x)
              (+ *offset (* *size-cell y))
              *size-cell *size-cell))
 
-(defn draw-arena!
-  [gfx arena]
+(defn draw-arena! [gfx arena]
   (dosync
    (doseq [x (range (count arena))
            y (range (count (first arena)))]
@@ -133,17 +128,16 @@
        (draw-cell! gfx c x y))))
   arena)
 
-(defn tron! "tron"
-  ([n]
-     (tron! n (random-arena! n) draw-arena!))
-  ([n arena draw-fn!]
-     (let [w (* *size-cell n)
-           h (* *size-cell n)
-           ^java.awt.Graphics2D gfx (get-gfx w h)]
-       (loop [arena arena]
-         (let [arena (draw-fn! gfx arena)]
-             (Thread/sleep 500)
-             (recur arena))))))
+(defn tron! "tron" ([n]
+                     (tron! n (random-arena! n) draw-arena!))
+                   ([n arena draw-fn!]
+                      (let [w (* *size-cell n)
+                            h (* *size-cell n)
+                            ^java.awt.Graphics2D gfx (get-gfx w h)]
+                        (loop [arena arena]
+                          (let [arena (draw-fn! gfx arena)]
+                            (Thread/sleep 500)
+                            (recur arena))))))
 
 #_(display-arena-print arena)
 
