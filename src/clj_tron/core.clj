@@ -9,8 +9,7 @@
 ;; tron! wall are black when a bot dies, the cell in which it crashes become orange in the colorized version, the name
 ;; is the color of the bot
 
-(defn make-arena
-  "Build a new arena w x h"
+(defn make-arena "Build a new arena w x h"
   [w h]
   (let [arena (->>
                (repeatedly #(ref nil))
@@ -41,8 +40,7 @@
 
 #_(print-arena arena)
 
-(defn play
-  "Play the strategy for the bot bot. A strategy takes one position or nil if impossible."
+(defn play "Play the strategy for the bot bot. A strategy takes one position or nil if impossible."
   [arena name {bot :strategy
                init-state :state} init-pos]
   (loop [{pos :pos
@@ -115,8 +113,7 @@
               (r/rand-pos n)))
       arena)))
 
-(defn- draw-cell!
-  "Given a color and a cell's coordinate, draw the cell with the color col"
+(defn- draw-cell! "Given a color and a cell's coordinate, draw the cell with the color col"
   [^java.awt.Graphics2D gfx ^java.awt.Color col x y]
   (.setColor gfx col)
   (.fillRect gfx
